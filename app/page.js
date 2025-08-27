@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
@@ -10,6 +10,25 @@ export default function CheckoutPage() {
   const [success, setSuccess] = useState(false);
   const [orderResponse, setOrderResponse] = useState(null);
   const [selectedUpsells, setSelectedUpsells] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  // Handle responsive design
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 480);
+      setIsTablet(window.innerWidth <= 768);
+    };
+
+    // Set initial values
+    checkScreenSize();
+
+    // Add event listener
+    window.addEventListener('resize', checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
   
   const [formData, setFormData] = useState({
     // Customer Information
@@ -159,31 +178,31 @@ export default function CheckoutPage() {
         <div style={{ 
           backgroundColor: 'white', 
           borderRadius: '12px', 
-          padding: window.innerWidth <= 768 ? '20px' : '40px', 
+          padding: isTablet ? '20px' : '40px', 
           maxWidth: '600px', 
           width: '100%',
           textAlign: 'center', 
           boxShadow: '0 20px 40px rgba(0,0,0,0.1)' 
         }}>
-          <div style={{ fontSize: window.innerWidth <= 768 ? '48px' : '72px', marginBottom: '20px' }}>✅</div>
+          <div style={{ fontSize: isTablet ? '48px' : '72px', marginBottom: '20px' }}>✅</div>
           <h1 style={{ 
             color: '#4CAF50', 
             marginBottom: '20px',
-            fontSize: window.innerWidth <= 768 ? '24px' : '32px'
+            fontSize: isTablet ? '24px' : '32px'
           }}>Order Successful!</h1>
           <p style={{ 
             color: '#666', 
-            fontSize: window.innerWidth <= 768 ? '16px' : '18px', 
+            fontSize: isTablet ? '16px' : '18px', 
             marginBottom: '30px' 
           }}>
             Thank you for your purchase!
           </p>
           <div style={{ 
             background: '#f8f9fa', 
-            padding: window.innerWidth <= 768 ? '15px' : '20px', 
+            padding: isTablet ? '15px' : '20px', 
             borderRadius: '8px', 
             textAlign: 'left',
-            fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+            fontSize: isTablet ? '14px' : '16px'
           }}>
             <p><strong>Order ID:</strong> {orderResponse.orderId}</p>
             <p><strong>Total:</strong> ${calculateTotal().toFixed(2)}</p>
@@ -200,14 +219,14 @@ export default function CheckoutPage() {
             onClick={() => window.location.reload()}
             style={{
               marginTop: '20px',
-              padding: window.innerWidth <= 768 ? '10px 20px' : '12px 30px',
+              padding: isTablet ? '10px 20px' : '12px 30px',
               backgroundColor: '#4CAF50',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px',
+              fontSize: isTablet ? '14px' : '16px',
               cursor: 'pointer',
-              width: window.innerWidth <= 480 ? '100%' : 'auto'
+              width: isMobile ? '100%' : 'auto'
             }}
           >
             Place Another Order
@@ -223,7 +242,7 @@ export default function CheckoutPage() {
       <div style={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-        padding: window.innerWidth <= 768 ? '20px 15px' : '40px 20px' 
+        padding: isTablet ? '20px 15px' : '40px 20px' 
       }}>
         <div style={{ 
           maxWidth: '900px', 
@@ -233,32 +252,32 @@ export default function CheckoutPage() {
           <div style={{ 
             backgroundColor: '#4CAF50', 
             color: 'white', 
-            padding: window.innerWidth <= 768 ? '15px' : '20px', 
+            padding: isTablet ? '15px' : '20px', 
             borderRadius: '12px', 
             marginBottom: '20px', 
             textAlign: 'center' 
           }}>
             <h2 style={{ 
               margin: 0,
-              fontSize: window.innerWidth <= 768 ? '20px' : '24px'
+              fontSize: isTablet ? '20px' : '24px'
             }}>🎉 Great Choice!</h2>
             <p style={{ 
               margin: '10px 0 0 0',
-              fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+              fontSize: isTablet ? '14px' : '16px'
             }}>Your Ninja Boost order is ready. Add these powerful upgrades:</p>
           </div>
 
           <div style={{ 
             backgroundColor: 'white', 
             borderRadius: '12px', 
-            padding: window.innerWidth <= 768 ? '20px' : '40px', 
+            padding: isTablet ? '20px' : '40px', 
             boxShadow: '0 20px 40px rgba(0,0,0,0.1)' 
           }}>
             <h2 style={{ 
               textAlign: 'center', 
               marginBottom: '30px', 
               color: '#333',
-              fontSize: window.innerWidth <= 768 ? '20px' : '24px'
+              fontSize: isTablet ? '20px' : '24px'
             }}>
               🚀 Maximize Your Results
             </h2>
@@ -270,7 +289,7 @@ export default function CheckoutPage() {
                   key={product.id}
                   onClick={() => toggleUpsell(product.id)}
                   style={{
-                    padding: window.innerWidth <= 768 ? '15px' : '20px',
+                    padding: isTablet ? '15px' : '20px',
                     marginBottom: '15px',
                     border: '2px solid',
                     borderColor: selectedUpsells.includes(product.id) ? '#667eea' : '#e0e0e0',
@@ -283,9 +302,9 @@ export default function CheckoutPage() {
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
-                    alignItems: window.innerWidth <= 768 ? 'flex-start' : 'center',
-                    flexDirection: window.innerWidth <= 480 ? 'column' : 'row',
-                    gap: window.innerWidth <= 480 ? '10px' : '0'
+                    alignItems: isTablet ? 'flex-start' : 'center',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: isMobile ? '10px' : '0'
                   }}>
                     <div style={{ 
                       display: 'flex', 
@@ -309,21 +328,21 @@ export default function CheckoutPage() {
                         <h3 style={{ 
                           margin: '0 0 5px 0', 
                           color: '#333',
-                          fontSize: window.innerWidth <= 768 ? '16px' : '18px'
+                          fontSize: isTablet ? '16px' : '18px'
                         }}>{product.name}</h3>
                         <p style={{ 
                           margin: 0, 
                           color: '#666', 
-                          fontSize: window.innerWidth <= 768 ? '13px' : '14px'
+                          fontSize: isTablet ? '13px' : '14px'
                         }}>{product.description}</p>
                       </div>
                     </div>
                     <div style={{ 
-                      textAlign: window.innerWidth <= 480 ? 'left' : 'right',
-                      marginLeft: window.innerWidth <= 480 ? '35px' : '0'
+                      textAlign: isMobile ? 'left' : 'right',
+                      marginLeft: isMobile ? '35px' : '0'
                     }}>
                       <div style={{ 
-                        fontSize: window.innerWidth <= 768 ? '20px' : '24px', 
+                        fontSize: isTablet ? '20px' : '24px', 
                         fontWeight: 'bold', 
                         color: '#667eea' 
                       }}>
@@ -343,20 +362,20 @@ export default function CheckoutPage() {
 
             {/* Order Summary */}
             <div style={{ 
-              padding: window.innerWidth <= 768 ? '15px' : '20px', 
+              padding: isTablet ? '15px' : '20px', 
               background: '#f8f9fa', 
               borderRadius: '8px', 
               marginBottom: '20px' 
             }}>
               <h3 style={{ 
                 margin: '0 0 15px 0',
-                fontSize: window.innerWidth <= 768 ? '16px' : '18px'
+                fontSize: isTablet ? '16px' : '18px'
               }}>Order Summary:</h3>
               <div style={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 marginBottom: '10px',
-                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+                fontSize: isTablet ? '14px' : '16px'
               }}>
                 <span>Ninja Boost (Main Product)</span>
                 <span>${mainProduct.price.toFixed(2)}</span>
@@ -368,7 +387,7 @@ export default function CheckoutPage() {
                     display: 'flex', 
                     justifyContent: 'space-between', 
                     marginBottom: '10px',
-                    fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+                    fontSize: isTablet ? '14px' : '16px'
                   }}>
                     <span>{product.name}</span>
                     <span>${product.price.toFixed(2)}</span>
@@ -381,7 +400,7 @@ export default function CheckoutPage() {
                 marginTop: '10px', 
                 display: 'flex', 
                 justifyContent: 'space-between', 
-                fontSize: window.innerWidth <= 768 ? '18px' : '20px', 
+                fontSize: isTablet ? '18px' : '20px', 
                 fontWeight: 'bold', 
                 color: '#667eea' 
               }}>
@@ -394,15 +413,15 @@ export default function CheckoutPage() {
             <div style={{ 
               display: 'flex', 
               gap: '15px',
-              flexDirection: window.innerWidth <= 480 ? 'column' : 'row'
+              flexDirection: isMobile ? 'column' : 'row'
             }}>
               <button
                 onClick={handleFinalSubmit}
                 disabled={loading}
                 style={{
                   flex: 1,
-                  padding: window.innerWidth <= 768 ? '12px' : '15px',
-                  fontSize: window.innerWidth <= 768 ? '16px' : '18px',
+                  padding: isTablet ? '12px' : '15px',
+                  fontSize: isTablet ? '16px' : '18px',
                   backgroundColor: loading ? '#ccc' : '#667eea',
                   color: 'white',
                   border: 'none',
@@ -418,14 +437,14 @@ export default function CheckoutPage() {
                 <button
                   onClick={handleFinalSubmit}
                   style={{
-                    padding: window.innerWidth <= 768 ? '12px 20px' : '15px 30px',
-                    fontSize: window.innerWidth <= 768 ? '14px' : '16px',
+                    padding: isTablet ? '12px 20px' : '15px 30px',
+                    fontSize: isTablet ? '14px' : '16px',
                     backgroundColor: 'transparent',
                     color: '#666',
                     border: '2px solid #e0e0e0',
                     borderRadius: '8px',
                     cursor: 'pointer',
-                    flex: window.innerWidth <= 480 ? 'none' : '0 0 auto'
+                    flex: isMobile ? 'none' : '0 0 auto'
                   }}
                 >
                   Skip Upgrades
@@ -439,7 +458,7 @@ export default function CheckoutPage() {
                 padding: '15px', 
                 backgroundColor: '#ffebee', 
                 borderRadius: '6px',
-                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+                fontSize: isTablet ? '14px' : '16px'
               }}>
                 <strong style={{ color: '#c62828' }}>Error:</strong> {error}
               </div>
@@ -455,7 +474,7 @@ export default function CheckoutPage() {
     <div style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-      padding: window.innerWidth <= 768 ? '20px 15px' : '40px 20px' 
+      padding: isTablet ? '20px 15px' : '40px 20px' 
     }}>
       <div style={{ 
         maxWidth: '800px', 
@@ -464,20 +483,20 @@ export default function CheckoutPage() {
         <div style={{ 
           backgroundColor: 'white', 
           borderRadius: '12px', 
-          padding: window.innerWidth <= 768 ? '20px' : '40px', 
+          padding: isTablet ? '20px' : '40px', 
           boxShadow: '0 20px 40px rgba(0,0,0,0.1)' 
         }}>
           <h1 style={{ 
             color: '#333', 
             marginBottom: '30px',
-            fontSize: window.innerWidth <= 768 ? '24px' : '32px',
-            textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+            fontSize: isTablet ? '24px' : '32px',
+            textAlign: isTablet ? 'center' : 'left'
           }}>Secure Checkout</h1>
           
           <form onSubmit={handleCheckoutSubmit}>
             {/* Product Display */}
             <div style={{ 
-              padding: window.innerWidth <= 768 ? '15px' : '20px', 
+              padding: isTablet ? '15px' : '20px', 
               background: 'linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%)', 
               borderRadius: '8px', 
               marginBottom: '25px', 
@@ -486,19 +505,19 @@ export default function CheckoutPage() {
               <h2 style={{ 
                 margin: '0 0 10px 0', 
                 color: '#333',
-                fontSize: window.innerWidth <= 768 ? '18px' : '20px'
+                fontSize: isTablet ? '18px' : '20px'
               }}>{mainProduct.name}</h2>
               <p style={{ 
                 margin: '0 0 15px 0', 
                 color: '#666',
-                fontSize: window.innerWidth <= 768 ? '14px' : '16px'
+                fontSize: isTablet ? '14px' : '16px'
               }}>{mainProduct.description}</p>
               <div style={{ 
-                fontSize: window.innerWidth <= 768 ? '24px' : '32px', 
+                fontSize: isTablet ? '24px' : '32px', 
                 fontWeight: 'bold', 
                 color: '#667eea' 
               }}>
-                ${mainProduct.price.toFixed(2)}<span style={{ fontSize: window.innerWidth <= 768 ? '14px' : '16px', color: '#666' }}>/month</span>
+                ${mainProduct.price.toFixed(2)}<span style={{ fontSize: isTablet ? '14px' : '16px', color: '#666' }}>/month</span>
               </div>
             </div>
 
@@ -507,11 +526,11 @@ export default function CheckoutPage() {
               <h3 style={{ 
                 marginBottom: '15px', 
                 color: '#333',
-                fontSize: window.innerWidth <= 768 ? '16px' : '18px'
+                fontSize: isTablet ? '16px' : '18px'
               }}>Customer Information</h3>
               <div style={{ 
                 display: 'grid', 
-                gridTemplateColumns: window.innerWidth <= 480 ? '1fr' : '1fr 1fr', 
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
                 gap: '15px' 
               }}>
                 <input
@@ -560,7 +579,7 @@ export default function CheckoutPage() {
                     borderRadius: '6px',
                     width: '100%',
                     boxSizing: 'border-box',
-                    gridColumn: window.innerWidth <= 480 ? '1' : 'auto'
+                    gridColumn: isMobile ? '1' : 'auto'
                   }}
                 />
                 <input
@@ -587,7 +606,7 @@ export default function CheckoutPage() {
               <h3 style={{ 
                 marginBottom: '15px', 
                 color: '#333',
-                fontSize: window.innerWidth <= 768 ? '16px' : '18px'
+                fontSize: isTablet ? '16px' : '18px'
               }}>Billing Address</h3>
               <div style={{ 
                 display: 'flex', 
@@ -612,7 +631,7 @@ export default function CheckoutPage() {
                 />
                 <div style={{ 
                   display: 'grid', 
-                  gridTemplateColumns: window.innerWidth <= 480 ? '1fr' : '2fr 1fr 1fr', 
+                  gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr 1fr', 
                   gap: '15px' 
                 }}>
                   <input
@@ -673,7 +692,7 @@ export default function CheckoutPage() {
               <h3 style={{ 
                 marginBottom: '15px', 
                 color: '#333',
-                fontSize: window.innerWidth <= 768 ? '16px' : '18px'
+                fontSize: isTablet ? '16px' : '18px'
               }}>Payment Information</h3>
               
               {/* Test Card Selector */}
@@ -734,7 +753,7 @@ export default function CheckoutPage() {
                 />
                 <div style={{ 
                   display: 'grid', 
-                  gridTemplateColumns: window.innerWidth <= 480 ? '1fr 1fr 1fr' : '1fr 1fr 1fr', 
+                  gridTemplateColumns: '1fr 1fr 1fr', 
                   gap: '15px' 
                 }}>
                   <input
@@ -796,8 +815,8 @@ export default function CheckoutPage() {
               type="submit"
               style={{
                 width: '100%',
-                padding: window.innerWidth <= 768 ? '15px' : '18px',
-                fontSize: window.innerWidth <= 768 ? '16px' : '18px',
+                padding: isTablet ? '15px' : '18px',
+                fontSize: isTablet ? '16px' : '18px',
                 backgroundColor: '#667eea',
                 color: 'white',
                 border: 'none',
