@@ -517,7 +517,7 @@ async function logWebhookEvent(eventData) {
 
 async function logUnknownWebhookEvent(data) {
   console.log('❓ Logging unknown webhook event:', data);
-  // TODO: Log unknown events for investigation
+  // TODO: Log unknown events for investigation.
 }
 
 // GET method for webhook health check
